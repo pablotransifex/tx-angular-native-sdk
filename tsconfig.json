@@ -19,7 +19,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "tx-angular-native-sdk": [
+        "dist/tx-angular-native-sdk/tx-angular-native-sdk",
+        "dist/tx-angular-native-sdk"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

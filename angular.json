@@ -3,5 +3,46 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "tx-angular-native-sdk": {
+      "projectType": "library",
+      "root": "projects/tx-angular-native-sdk",
+      "sourceRoot": "projects/tx-angular-native-sdk/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/tx-angular-native-sdk/tsconfig.lib.json",
+            "project": "projects/tx-angular-native-sdk/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/tx-angular-native-sdk/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/tx-angular-native-sdk/src/test.ts",
+            "tsConfig": "projects/tx-angular-native-sdk/tsconfig.spec.json",
+            "karmaConfig": "projects/tx-angular-native-sdk/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/tx-angular-native-sdk/tsconfig.lib.json",
+              "projects/tx-angular-native-sdk/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "tx-angular-native-sdk"
 }
