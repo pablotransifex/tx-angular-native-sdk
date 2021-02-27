@@ -1,34 +1,35 @@
 import { Injectable } from '@angular/core';
+import { ITranslationServiceConfig, ILanguage } from './interfaces';
 import { ReplaySubject } from 'rxjs';
+import { ITranslateParams } from './interfaces';
 
 const { tx, t } = require('@transifex/native');
 
-export interface ITranslationServiceConfig {
-  token: string;
-  secret: string;
-  sourceLocale: string;
-}
-
-export interface ILanguage {
-  code: string;
-  name: string;
-}
-
-// This ensures singleton instance
+/** Singleton Injection */
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * Service which wraps the Transifex Native library for using
+ * inside components
+ */
 export class TranslationService {
-  // Observable for detect locale change
+  // Observable for detecting locale change
   private localeChangedSource = new ReplaySubject<boolean>(0);
   localeChanged$ = this.localeChangedSource.asObservable();
 
-  // Observable for detect translation change
+  // Observable for detecting translation change
   private contentTranslatedSource = new ReplaySubject<boolean>(0);
   contentTranslated$ = this.contentTranslatedSource.asObservable();
 
   constructor() { }
 
+  /**
+   * Initializes the translation service
+   * @param {ITranslationServiceConfig} config
+   * @returns void
+   */
   async init(config: ITranslationServiceConfig) {
     tx.init({
       token: config.token,
@@ -38,21 +39,32 @@ export class TranslationService {
     await this.getLanguages();
   }
 
+  /**
+   * Sets the current locale
+   * @param {string} locale
+   * @returns void
+   */
   async setLocale(locale: string) {
     await tx.setCurrentLocale(locale);
     this.localeChangedSource.next(true);
   }
 
-  getLanguages() {
-    return new Promise<ILanguage[]>((resolve, reject) => {
-      tx.getLanguages().then((languages: ILanguage[]) => {
-        resolve(languages);
-      });
-    });
+  /**
+   * Gets the languages collection
+   * @returns any
+   */  
+  async getLanguages() {
+    return await tx.getLanguages();
   }
 
-  translate(str: string, key: string): string {
+  /**
+   * Translate a string
+   * @param {string} str
+   * @param {ITranslateParams} params
+   * @returns void
+   */  
+  translate(str: string, params: ITranslateParams): string {
     this.contentTranslatedSource.next(true);
-    return t(str, { _key: key });
+    return t(str, params);
   }
 }
