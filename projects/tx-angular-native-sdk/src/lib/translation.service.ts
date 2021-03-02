@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ITranslationServiceConfig, ILanguage } from './interfaces';
 import { ReplaySubject } from 'rxjs';
-import { ITranslateParams } from './interfaces';
+
+import { ITranslationServiceConfig } from './interfaces';
 
 const { tx, t } = require('@transifex/native');
 
@@ -30,7 +30,7 @@ export class TranslationService {
    * @param {ITranslationServiceConfig} config
    * @returns void
    */
-  async init(config: ITranslationServiceConfig) {
+  public async init(config: ITranslationServiceConfig) {
     tx.init({
       token: config.token,
       secret: config.secret,
@@ -44,7 +44,7 @@ export class TranslationService {
    * @param {string} locale
    * @returns void
    */
-  async setLocale(locale: string) {
+  public async setLocale(locale: string) {
     await tx.setCurrentLocale(locale);
     this.localeChangedSource.next(true);
   }
@@ -52,19 +52,26 @@ export class TranslationService {
   /**
    * Gets the languages collection
    * @returns any
-   */  
-  async getLanguages() {
+   */
+  public async getLanguages() {
     return await tx.getLanguages();
   }
 
   /**
    * Translate a string
    * @param {string} str
-   * @param {ITranslateParams} params
+   * @param {Object} params
    * @returns void
-   */  
-  translate(str: string, params: ITranslateParams): string {
+   */
+  public translate(str: string, params: Object): string {
     this.contentTranslatedSource.next(true);
     return t(str, params);
+  }
+
+  /**
+   * Returns the parsed result of the translations
+   */
+  public getParsedResult(str: string, key: string, params?: Object): string {
+    return this.translate(str, Object.assign({ _key: key }, params) || {});
   }
 }
