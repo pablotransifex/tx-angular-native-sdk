@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { ITranslateParams } from '../interfaces';
 import { TranslationService } from '../translation.service';
 
 @Component({
@@ -12,64 +13,56 @@ import { TranslationService } from '../translation.service';
 /**
  * A translation component
  * @param {string} _str
- * @param {string} _key
- * @param {string} _context
- * @param {string} _comment
- * @param {number} _charlimit
- * @param {string} _tags
- * @param {boolean} _escapeVars
- * @param {boolean} _inline
+ * @param {Object} _vars
  */
 export class TComponent implements OnInit {
   @Input()
   _str: string = '';
   @Input()
-  _key: string = '';
-  @Input()
-  _context: string = '';
-  @Input()
-  _comment: string = '';
-  @Input()
-  _charlimit: number = 0;
-  @Input()
-  _tags: string = '';
-  @Input()
-  _escapeVars: boolean = false;
-  @Input()
-  _inline: boolean = false;
+  _vars: Object = {};
 
+  _translateParams: ITranslateParams = {
+    _key: '',
+    _context: '',
+    _comment: '',
+    _charlimit: 0,
+    _tags: '',
+    _escapeVars: false,
+    _inline: false,
+  };
   _translatedStr: string = '';
 
   // Observable for detecting locale changes
-  localeChanged$ = new Observable<boolean>();
+  _localeChanged = new Observable<string>();
 
   /**
    * Constructor
    * @param {TranslationService} translationService
-   */  
+   */
   constructor(protected translationService: TranslationService) {
-    this.localeChanged$ = translationService.localeChanged$;
-    this.localeChanged$.subscribe(() => {
+    this._localeChanged = translationService.localeChanged;
+    this._localeChanged.subscribe((locale) => {
       this.translate();
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void { }
+
+  /**
+   * Input parameters change detector
+   * @param {SimpleChanges} changes
+   */
+  ngOnChanges(changes: SimpleChanges) {
     this.translate();
   }
 
   /**
    * Translate a string using the translation service
-   */    
+   */
   translate() {
+    this._translateParams = this._vars as ITranslateParams;
     this._translatedStr =
-      this.translationService.translate(this._str, {
-        _key: this._key,
-        _context: this._context,
-        _comment: this._comment,
-        _tags: this._tags,
-        _escapeVars: this._escapeVars,
-        _charlimit: this._charlimit
-      });
+      this.translationService.translate(this._str,
+        this._vars || {});
   }
 }

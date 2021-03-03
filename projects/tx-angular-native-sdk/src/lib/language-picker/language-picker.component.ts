@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { ILanguage } from '../interfaces';
 import { TranslationService } from '../translation.service';
@@ -17,13 +17,16 @@ export class LanguagePickerComponent implements OnInit {
   @Input()
   className: string = '';
 
+  @Output()
+  localeChanged: EventEmitter<string> = new EventEmitter<string>();
+
   languages: ILanguage[] = [];
 
   /**
    * Constructor
    * @param {TranslationService} translationService
    */
-  constructor(private translationService: TranslationService) {
+  constructor(public translationService: TranslationService) {
     this.getLanguages.bind(this);
   }
 
@@ -44,7 +47,8 @@ export class LanguagePickerComponent implements OnInit {
    * @param {Event} event
    */   
   async onChange(event: Event) {
-    await this.translationService.setLocale(
-      (event.target as HTMLSelectElement).value);
+    const locale = (event.target as HTMLSelectElement).value || '';
+    this.localeChanged.emit(locale);
+    await this.translationService.setLocale(locale);
   }
 }

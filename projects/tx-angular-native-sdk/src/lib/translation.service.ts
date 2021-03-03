@@ -16,12 +16,12 @@ const { tx, t } = require('@transifex/native');
  */
 export class TranslationService {
   // Observable for detecting locale change
-  private localeChangedSource = new ReplaySubject<boolean>(0);
-  localeChanged$ = this.localeChangedSource.asObservable();
+  private _localeChanged = new ReplaySubject<string>(0);
+  localeChanged = this._localeChanged.asObservable();
 
   // Observable for detecting translation change
-  private contentTranslatedSource = new ReplaySubject<boolean>(0);
-  contentTranslated$ = this.contentTranslatedSource.asObservable();
+  private _contentTranslated = new ReplaySubject<string>(0);
+  contentTranslated = this._contentTranslated.asObservable();
 
   constructor() { }
 
@@ -46,7 +46,15 @@ export class TranslationService {
    */
   public async setLocale(locale: string) {
     await tx.setCurrentLocale(locale);
-    this.localeChangedSource.next(true);
+    this._localeChanged.next(locale);
+  }
+
+  /**
+   * Gets the current locale
+   * @returns string
+   */
+  public getLocale(): string {
+    return tx.currentLocale || '';
   }
 
   /**
@@ -64,14 +72,7 @@ export class TranslationService {
    * @returns void
    */
   public translate(str: string, params: Object): string {
-    this.contentTranslatedSource.next(true);
+    this._contentTranslated.next(tx.currentLocale || '');
     return t(str, params);
-  }
-
-  /**
-   * Returns the parsed result of the translations
-   */
-  public getParsedResult(str: string, key: string, params?: Object): string {
-    return this.translate(str, Object.assign({ _key: key }, params) || {});
   }
 }

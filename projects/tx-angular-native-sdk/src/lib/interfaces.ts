@@ -17,4 +17,5 @@ export interface ITranslateParams {
   _tags: string;
   _key: string;
   _escapeVars: boolean;
+  _inline: boolean;
 }
