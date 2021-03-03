@@ -15,7 +15,14 @@ import { TranslationService } from '../translation.service';
 /**
  * A translation component with escaped variables
  * @param {string} _str
- * @param {string} _vars
+ * @param {string=} _key
+ * @param {string=} _context
+ * @param {string=} _comment
+ * @param {number=} _charlimit
+ * @param {string=} _tags
+ * @param {boolean=} _escapeVars
+ * @param {boolean=} _inline
+ * @param {Object=} _vars
  */
 export class UTComponent extends TComponent implements OnInit {
   /**

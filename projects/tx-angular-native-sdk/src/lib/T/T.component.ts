@@ -13,13 +13,34 @@ import { TranslationService } from '../translation.service';
 /**
  * A translation component
  * @param {string} _str
- * @param {Object} _vars
+ * @param {string=} _key
+ * @param {string=} _context
+ * @param {string=} _comment
+ * @param {number=} _charlimit
+ * @param {string=} _tags
+ * @param {boolean=} _escapeVars
+ * @param {boolean=} _inline
+ * @param {Object=} _vars
  */
 export class TComponent implements OnInit {
   @Input()
   _str: string = '';
   @Input()
-  _vars: Object = {};
+  _key?: string = '';
+  @Input()
+  _context?: string = '';
+  @Input()
+  _comment?: string = '';
+  @Input()
+  _charlimit?: number = 0;
+  @Input()
+  _tags?: string = '';
+  @Input()
+  _escapeVars?: boolean = false;
+  @Input()
+  _inline?: boolean = false;
+  @Input()
+  _vars?: Object = {};
 
   _translateParams: ITranslateParams = {
     _key: '',
@@ -42,6 +63,15 @@ export class TComponent implements OnInit {
   constructor(protected translationService: TranslationService) {
     this._localeChanged = translationService.localeChanged;
     this._localeChanged.subscribe((locale) => {
+      Object.assign(this._translateParams, {
+        _key: this._key,
+        _context: this._context,
+        _comment: this._comment,
+        _charlimit: this._charlimit,
+        _tags: this._tags,
+        _escapeVars: this._escapeVars,
+        _inline: this._inline,
+      });
       this.translate();
     });
   }
@@ -60,9 +90,8 @@ export class TComponent implements OnInit {
    * Translate a string using the translation service
    */
   translate() {
-    this._translateParams = this._vars as ITranslateParams;
     this._translatedStr =
       this.translationService.translate(this._str,
-        this._vars || {});
+        {...this._translateParams || {}, ...this._vars || {} });
   }
 }
