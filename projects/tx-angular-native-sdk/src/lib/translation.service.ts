@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-import { ITranslationServiceConfig } from './interfaces';
+import { ITranslateParams, ITranslationServiceConfig } from './interfaces';
 
 const { tx, t } = require('@transifex/native');
 
@@ -76,3 +76,4 @@ export class TranslationService {
     return t(str, params);
   }
 }
+

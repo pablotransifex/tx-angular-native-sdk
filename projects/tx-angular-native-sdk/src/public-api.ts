@@ -2,7 +2,9 @@
  * Public API Surface of tx-angular-native-sdk
  */
 
+// export * from './lib/translatable-string.decorator';
 export * from './lib/interfaces';
+export * from './lib/translatable-string.decorator';
 export * from './lib/translation.service';
 export * from './lib/T/T.component';
 export * from './lib/UT/UT.component';

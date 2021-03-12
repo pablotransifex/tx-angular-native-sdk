@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { LanguagePickerComponent } from './language-picker/language-picker.component';
 import { TComponent } from './T/T.component';
+import { TranslatableStringDecoratorService } from './translatable-string.decorator';
 import { TranslationService } from './translation.service';
 import { UTComponent } from './UT/UT.component';
 
@@ -13,6 +14,8 @@ import { UTComponent } from './UT/UT.component';
   exports: [TComponent, UTComponent, LanguagePickerComponent]
 })
 export class TxNativeModule {
+  public constructor(service: TranslatableStringDecoratorService) {}
+
   /**
    * Use this method in your root module to provide the TranslationService
    */
@@ -20,7 +23,8 @@ export class TxNativeModule {
     return {
       ngModule: TxNativeModule,
       providers: [
-        TranslationService
+        TranslationService,
+        TranslatableStringDecoratorService
       ]
     };
   }
@@ -32,7 +36,8 @@ export class TxNativeModule {
     return {
       ngModule: TxNativeModule,
       providers: [
-        TranslationService
+        TranslationService,
+        TranslatableStringDecoratorService
       ]
     };
   }
